@@ -32,6 +32,7 @@ public class Application {
 
     static class InputView {
         private static final String INPUT_CAR_NAMES_MESSAGE = "경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)";
+        private static final String INPUT_TRY_COUNT_MESSAGE = "시도할 횟수는 몇 회인가요?";
         private static final String DELIMITER = ",";
 
         public static String[] readCarNames() {
@@ -39,7 +40,16 @@ public class Application {
             String input = Console.readLine();
             return input.split(DELIMITER);
         }
+
+        public static int readTryCount() {
+            System.out.println(INPUT_TRY_COUNT_MESSAGE);
+            String input = Console.readLine();
+            Validator.validateTryCount(input);
+            return Integer.parseInt(input);
+        }
     }
+
+
 
     static class Validator {
         private static final int MAX_NAME_LENGTH = 5;
@@ -52,6 +62,18 @@ public class Application {
                 throw new IllegalArgumentException("자동차 이름은 5자 이하만 가능합니다.");
             }
         }
+
+        public static void validateTryCount(String input){
+            try{
+                Integer.parseInt(input);
+            }catch (NumberFormatException e){
+                throw new IllegalArgumentException("시도 횟수는 숫자여야 합니다.");
+            }
+
+            if (Integer.parseInt(input) <= 0){
+                throw new IllegalArgumentException("시도 횟수는 1 이상의 숫자여야 합니다");
+            }
+        }
     }
 
 
@@ -60,7 +82,10 @@ public class Application {
             String[] carNames = InputView.readCarNames();
             Cars cars = new Cars(carNames); // cars 객체 생성 (이 과정에서 이름 검증)
 
-            System.out.println("1단계 성공");
+
+            int tryCount = InputView.readTryCount();
+
+            System.out.println(tryCount + "회");
 
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] " + e.getMessage());
