@@ -28,6 +28,14 @@ public class Application {
                 position++;
             }
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPosition() {
+            return position;
+        }
     }
 
     static class Cars {
@@ -44,6 +52,25 @@ public class Application {
             for (Car car : carList){
                 car.move();
             }
+        }
+
+        public List<Car> getCarList() {
+            return List.copyOf(carList);
+        }
+
+        private int findMaxPosition() {
+            return carList.stream()
+                    .mapToInt(Car::getPosition)
+                    .max()
+                    .orElse(0);
+        }
+
+        public List<String> findWinners(){
+            int maxPosition = findMaxPosition();
+            return carList.stream()
+                    .filter(car -> car.getPosition() == maxPosition)
+                    .map(Car::getName)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -64,6 +91,33 @@ public class Application {
             String input = Console.readLine();
             Validator.validateTryCount(input);
             return Integer.parseInt(input);
+        }
+    }
+
+    static class OutputView{
+        private static final String EXECUTION_RESULT_HEADER = "\n실행결과";
+        private static final String CAR_POSITION_FORMAT = "%s : %s\n";
+        private static final String POSITION_MARKER = "-";
+        private static final String WINNER_ANNOUNCEMENT = "최종 우승자 : ";
+
+        public static void printExecutionResultHeader() {
+            System.out.println(EXECUTION_RESULT_HEADER);
+        }
+
+        public static void printRoundResult(Cars cars) {
+            for (Car car : cars.getCarList()) {
+                System.out.printf(CAR_POSITION_FORMAT, car.getName(), formatPosition(car.getPosition()));
+            }
+            System.out.println();
+        }
+
+        private static String formatPosition(int position) {
+            return POSITION_MARKER.repeat(position);
+        }
+
+        public static void printWinners(List<String> winners){
+            String winnerNames = String.join(", ",winners);
+            System.out.println(WINNER_ANNOUNCEMENT + winnerNames);
         }
     }
 
@@ -103,10 +157,15 @@ public class Application {
 
             int tryCount = InputView.readTryCount();
 
+            OutputView.printExecutionResultHeader();
+
             for (int i = 0 ; i < tryCount ; i++){
                 cars.moveAll();
+                OutputView.printRoundResult(cars);
             }
-            System.out.println(tryCount + "회 이동 완료");
+
+            List<String> winners = cars.findWinners();
+            OutputView.printWinners(winners);
 
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] " + e.getMessage());
