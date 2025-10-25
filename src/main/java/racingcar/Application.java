@@ -1,6 +1,7 @@
 package racingcar;
 
 import camp.nextstep.edu.missionutils.Console;
+import camp.nextstep.edu.missionutils.Randoms;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,12 +10,23 @@ import java.util.stream.Collectors;
 public class Application {
 
     static class Car {
+        private static final int MOVE_CONDITION = 4;
+        private static final int MIN_RANDOM_NUMBER = 0;
+        private static final int MAX_RANDOM_NUMBER = 9;
+
         private final String name;
         private int position = 0;
 
         public Car(String name) {
             Validator.validateCarName(name);
             this.name = name.trim();
+        }
+
+        public void move(){
+            int randomNumber = Randoms.pickNumberInRange(MIN_RANDOM_NUMBER, MAX_RANDOM_NUMBER);
+            if (randomNumber >= MOVE_CONDITION){
+                position++;
+            }
         }
     }
 
@@ -26,6 +38,12 @@ public class Application {
             this.carList = Arrays.stream(carNames)
                     .map(Car::new)
                     .collect(Collectors.toList());
+        }
+
+        public void moveAll(){
+            for (Car car : carList){
+                car.move();
+            }
         }
     }
 
@@ -85,7 +103,10 @@ public class Application {
 
             int tryCount = InputView.readTryCount();
 
-            System.out.println(tryCount + "회");
+            for (int i = 0 ; i < tryCount ; i++){
+                cars.moveAll();
+            }
+            System.out.println(tryCount + "회 이동 완료");
 
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] " + e.getMessage());
