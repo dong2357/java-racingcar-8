@@ -150,25 +150,20 @@ public class Application {
 
 
     public static void main(String[] args) {
-        try {
-            String[] carNames = InputView.readCarNames();
-            Cars cars = new Cars(carNames); // cars 객체 생성 (이 과정에서 이름 검증)
+        String[] carNames = InputView.readCarNames();
+        Cars cars = new Cars(carNames); // cars 객체 생성 (이 과정에서 이름 검증)
 
 
-            int tryCount = InputView.readTryCount();
+        int tryCount = InputView.readTryCount();
 
-            OutputView.printExecutionResultHeader();
+        OutputView.printExecutionResultHeader();
 
-            for (int i = 0 ; i < tryCount ; i++){
-                cars.moveAll();
-                OutputView.printRoundResult(cars);
-            }
-
-            List<String> winners = cars.findWinners();
-            OutputView.printWinners(winners);
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("[ERROR] " + e.getMessage());
+        for (int i = 0 ; i < tryCount ; i++){
+            cars.moveAll();
+            OutputView.printRoundResult(cars);
         }
+
+        List<String> winners = cars.findWinners();
+        OutputView.printWinners(winners);
     }
 }
